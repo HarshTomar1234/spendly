@@ -1,0 +1,214 @@
+/* ------------------------------------------------------------------ */
+/* Landing hero — overrides for the redesigned hero section            */
+/* Loaded after style.css from templates/landing.html                  */
+/* ------------------------------------------------------------------ */
+
+.hero {
+    display: block;
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 5rem 2rem 6rem;
+    text-align: center;
+}
+
+.hero-inner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.hero-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.55rem;
+    background: #e6f4ec;
+    color: #1a472a;
+    font-family: var(--font-body);
+    font-size: 0.875rem;
+    font-weight: 500;
+    text-transform: none;
+    letter-spacing: 0;
+    padding: 0.45rem 1.05rem;
+    border-radius: 999px;
+}
+
+.hero-pill-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #1a472a;
+}
+
+.hero-headline {
+    font-family: 'DM Sans', system-ui, sans-serif;
+    font-weight: 800;
+    font-size: clamp(2.5rem, 6vw, 4.75rem);
+    line-height: 1.05;
+    letter-spacing: -0.03em;
+    color: var(--ink);
+    margin: 1.75rem 0 1.25rem;
+}
+
+.hero-headline-accent {
+    color: #2d6a4f;
+}
+
+.hero-lede {
+    font-size: 1.125rem;
+    color: var(--ink-muted);
+    line-height: 1.6;
+    max-width: 620px;
+    margin: 0 auto 2.25rem;
+}
+
+.hero-cta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    justify-content: center;
+    margin-bottom: 4rem;
+}
+
+.hero-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: #0f0f0f;
+    color: #ffffff;
+    font-family: var(--font-body);
+    font-weight: 600;
+    font-size: 1rem;
+    padding: 0.95rem 1.85rem;
+    border-radius: 999px;
+    text-decoration: none;
+    transition: background 0.2s ease, transform 0.15s ease;
+}
+
+.hero-btn:hover {
+    background: #1f1f1f;
+    transform: translateY(-1px);
+}
+
+/* Browser-style mock window ----------------------------------------- */
+
+.hero-mock {
+    width: 100%;
+    max-width: 1000px;
+    background: #f1efe9;
+    border-radius: 24px;
+    padding: 1.5rem;
+    box-shadow: 0 18px 50px rgba(15, 15, 15, 0.06);
+}
+
+.hero-mock-dots {
+    display: flex;
+    gap: 0.45rem;
+    padding: 0.25rem 0 1.25rem 0.4rem;
+}
+
+.hero-mock-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    display: inline-block;
+}
+
+.hero-mock-dot.dot-r { background: #e87d70; }
+.hero-mock-dot.dot-y { background: #f0c357; }
+.hero-mock-dot.dot-g { background: #95d4a3; }
+
+/* Stat cards row */
+
+.hero-mock-stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.hero-stat {
+    background: #fdfcfa;
+    border: 1px solid #e7e3d9;
+    border-radius: 16px;
+    padding: 1.25rem 1.4rem;
+    text-align: left;
+}
+
+.hero-stat-label {
+    font-size: 0.875rem;
+    color: var(--ink-muted);
+    margin-bottom: 0.6rem;
+}
+
+.hero-stat-value {
+    font-family: 'DM Sans', system-ui, sans-serif;
+    font-weight: 700;
+    font-size: 1.75rem;
+    letter-spacing: -0.02em;
+    color: var(--ink);
+    line-height: 1.1;
+    margin-bottom: 0.6rem;
+}
+
+.hero-stat-delta {
+    font-size: 0.875rem;
+    color: var(--ink-faint);
+}
+
+.hero-stat-delta.delta-up { color: #d75353; }
+.hero-stat-delta.delta-good { color: #2d8659; }
+
+/* Category bars card */
+
+.hero-mock-bars {
+    background: #fdfcfa;
+    border: 1px solid #e7e3d9;
+    border-radius: 16px;
+    padding: 1.5rem 1.6rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.hero-mock-bar-row {
+    display: grid;
+    grid-template-columns: 80px 1fr;
+    align-items: center;
+    gap: 1rem;
+}
+
+.hero-mock-cat {
+    font-size: 0.95rem;
+    color: var(--ink-soft);
+    text-align: left;
+}
+
+.hero-mock-bar-track {
+    height: 8px;
+    background: #ebe7dc;
+    border-radius: 999px;
+    overflow: hidden;
+}
+
+.hero-mock-bar {
+    height: 100%;
+    border-radius: 999px;
+    transition: width 0.6s ease;
+}
+
+.hero-mock-bar.bar-food   { background: #e8a838; }
+.hero-mock-bar.bar-travel { background: #5089d3; }
+.hero-mock-bar.bar-bills  { background: #8a78d4; }
+
+/* Responsive -------------------------------------------------------- */
+
+@media (max-width: 760px) {
+    .hero { padding: 3rem 1rem 4rem; }
+    .hero-headline { font-size: clamp(2rem, 9vw, 3rem); }
+    .hero-lede { font-size: 1rem; }
+    .hero-cta { flex-direction: column; width: 100%; max-width: 320px; margin-bottom: 2.5rem; }
+    .hero-btn { width: 100%; }
+    .hero-mock { padding: 1rem; border-radius: 18px; }
+    .hero-mock-stats { grid-template-columns: 1fr; }
+    .hero-mock-bar-row { grid-template-columns: 70px 1fr; }
+}
