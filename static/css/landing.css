@@ -202,6 +202,70 @@
 
 /* Responsive -------------------------------------------------------- */
 
+/* ------------------------------------------------------------------ */
+/* Demo modal                                                          */
+/* ------------------------------------------------------------------ */
+
+.modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(15, 15, 15, 0.78);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+    padding: 1.5rem;
+}
+
+.modal-overlay.is-open { display: flex; }
+
+.modal-box {
+    position: relative;
+    background: #0f0f0f;
+    border-radius: 16px;
+    width: 100%;
+    max-width: 860px;
+    overflow: hidden;
+    box-shadow: 0 32px 80px rgba(0, 0, 0, 0.5);
+}
+
+.modal-close {
+    position: absolute;
+    top: 0.75rem;
+    right: 0.85rem;
+    background: transparent;
+    border: none;
+    color: #fff;
+    font-size: 2rem;
+    line-height: 1;
+    cursor: pointer;
+    z-index: 10;
+    padding: 0.2rem 0.45rem;
+    opacity: 0.75;
+    transition: opacity 0.15s;
+}
+
+.modal-close:hover { opacity: 1; }
+
+.modal-video-wrap {
+    position: relative;
+    padding-bottom: 56.25%;
+    height: 0;
+}
+
+.modal-video-wrap iframe {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    border: none;
+    display: block;
+}
+
+/* ------------------------------------------------------------------ */
+/* Responsive                                                          */
+/* ------------------------------------------------------------------ */
+
 @media (max-width: 760px) {
     .hero { padding: 3rem 1rem 4rem; }
     .hero-headline { font-size: clamp(2rem, 9vw, 3rem); }
