@@ -79,3 +79,14 @@ def seed_db():
     )
     con.commit()
     con.close()
+
+
+def create_user(name, email, password):
+    pw_hash = generate_password_hash(password)
+    con = get_db()
+    con.execute(
+        "INSERT INTO users (name, email, password_hash) VALUES (?, ?, ?)",
+        (name, email, pw_hash),
+    )
+    con.commit()
+    con.close()
