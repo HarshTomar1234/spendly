@@ -90,3 +90,12 @@ def create_user(name, email, password):
     )
     con.commit()
     con.close()
+
+
+def get_user_by_email(email):
+    con = get_db()
+    user = con.execute(
+        "SELECT * FROM users WHERE email = ?", (email,)
+    ).fetchone()
+    con.close()
+    return user
