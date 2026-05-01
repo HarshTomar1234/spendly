@@ -20,6 +20,7 @@
             </a>
             <div class="nav-links">
                 {% if session.get("user_id") %}
+                <span class="nav-user">{{ session.get("user_name") }}</span>
                 <a href="{{ url_for('logout') }}">Sign out</a>
                 {% else %}
                 <a href="{{ url_for('login') }}">Sign in</a>
@@ -30,6 +31,15 @@
     </nav>
 
     <main class="main-content">
+        {% with messages = get_flashed_messages() %}
+          {% if messages %}
+            <div class="flash-container">
+              {% for message in messages %}
+                <div class="flash-message">{{ message }}</div>
+              {% endfor %}
+            </div>
+          {% endif %}
+        {% endwith %}
         {% block content %}{% endblock %}
     </main>
 
