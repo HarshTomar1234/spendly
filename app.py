@@ -1,5 +1,6 @@
+import os
 import sqlite3
-from datetime import datetime
+from datetime import datetime, date
 from flask import Flask, render_template, request, redirect, url_for, flash, session, abort
 from werkzeug.security import check_password_hash
 from database.db import get_db, init_db, seed_db, create_user, get_user_by_email
@@ -38,6 +39,14 @@ def format_display_date(iso_date):
         return dt.strftime("%d %b %Y")
     except (ValueError, TypeError):
         return iso_date
+
+
+def _first_of_month_n_ago(n, from_date):
+    m, y = from_date.month - n, from_date.year
+    while m <= 0:
+        m += 12
+        y -= 1
+    return date(y, m, 1)
 
 
 # ------------------------------------------------------------------ #
@@ -136,8 +145,8 @@ def profile():
     if not session.get("user_id"):
         return redirect(url_for("login"))
 
-    uid     = session["user_id"]
-    row     = get_user_by_id(uid)
+    uid = session["user_id"]
+    row = get_user_by_id(uid)
     if row is None:
         session.clear()
         return redirect(url_for("login"))
@@ -149,22 +158,61 @@ def profile():
         "initials":     initials_from_name(row["name"]),
     }
 
-    raw_stats  = get_summary_stats(uid)
+    # Parse and validate date filter params
+    raw_from = request.args.get("date_from", "").strip()
+    raw_to   = request.args.get("date_to",   "").strip()
+
+    date_from_obj = date_to_obj = None
+    if raw_from:
+        try:
+            date_from_obj = datetime.strptime(raw_from, "%Y-%m-%d").date()
+        except ValueError:
+            pass
+    if raw_to:
+        try:
+            date_to_obj = datetime.strptime(raw_to, "%Y-%m-%d").date()
+        except ValueError:
+            pass
+
+    if date_from_obj and date_to_obj and date_from_obj > date_to_obj:
+        flash("Start date must be before end date.")
+        date_from_obj = date_to_obj = None
+
+    date_from = str(date_from_obj) if date_from_obj else None
+    date_to   = str(date_to_obj)   if date_to_obj   else None
+
+    # Compute preset date ranges
+    today = date.today()
+    presets = {
+        "this_month":    {"label": "This Month",    "date_from": str(today.replace(day=1)),            "date_to": str(today)},
+        "last_3_months": {"label": "Last 3 Months", "date_from": str(_first_of_month_n_ago(3, today)), "date_to": str(today)},
+        "last_6_months": {"label": "Last 6 Months", "date_from": str(_first_of_month_n_ago(6, today)), "date_to": str(today)},
+    }
+
+    raw_stats   = get_summary_stats(uid, date_from=date_from, date_to=date_to)
     total_spent = raw_stats["total_spent"]
+
+    if date_from_obj and date_to_obj:
+        days        = (date_to_obj - date_from_obj).days + 1
+        avg_per_day = round(total_spent / max(days, 1), 2)
+        filter_label = f"{format_display_date(date_from)} – {format_display_date(date_to)}"
+    else:
+        avg_per_day  = round(total_spent / 30, 2)
+        filter_label = "all time"
 
     stats = {
         "total_spent":       total_spent,
         "transaction_count": raw_stats["transaction_count"],
         "top_category":      raw_stats["top_category"],
-        "avg_per_day":       round(total_spent / 30, 2),
+        "avg_per_day":       avg_per_day,
     }
 
     transactions = [
         {**t, "date": format_display_date(t["date"])}
-        for t in get_recent_transactions(uid)
+        for t in get_recent_transactions(uid, date_from=date_from, date_to=date_to)
     ]
 
-    categories = get_category_breakdown(uid)
+    categories = get_category_breakdown(uid, date_from=date_from, date_to=date_to)
 
     return render_template(
         "profile.html",
@@ -172,6 +220,10 @@ def profile():
         stats=stats,
         transactions=transactions,
         categories=categories,
+        date_from=date_from or "",
+        date_to=date_to or "",
+        presets=presets,
+        filter_label=filter_label,
     )
 
 
@@ -194,4 +246,4 @@ if __name__ == "__main__":
     with app.app_context():
         init_db()
         seed_db()
-    app.run(debug=True, port=5001)
+    app.run(debug=os.environ.get("FLASK_DEBUG", "false").lower() == "true", port=5001)
