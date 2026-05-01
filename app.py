@@ -1,10 +1,43 @@
 import sqlite3
+from datetime import datetime
 from flask import Flask, render_template, request, redirect, url_for, flash, session, abort
 from werkzeug.security import check_password_hash
 from database.db import get_db, init_db, seed_db, create_user, get_user_by_email
+from database.queries import (
+    get_user_by_id,
+    get_recent_transactions,
+    get_summary_stats,
+    get_category_breakdown,
+)
 
 app = Flask(__name__)
 app.secret_key = "spendly-dev-secret"
+
+
+# ------------------------------------------------------------------ #
+# Presentation helpers                                                #
+# ------------------------------------------------------------------ #
+
+def initials_from_name(name):
+    return "".join(w[0].upper() for w in name.split() if w)
+
+
+def format_member_since(created_at):
+    """'2026-05-01 12:34:56' → 'May 2026'"""
+    try:
+        dt = datetime.strptime(created_at[:10], "%Y-%m-%d")
+        return dt.strftime("%B %Y")
+    except (ValueError, TypeError):
+        return created_at
+
+
+def format_display_date(iso_date):
+    """'2026-04-03' → '03 Apr 2026'"""
+    try:
+        dt = datetime.strptime(iso_date, "%Y-%m-%d")
+        return dt.strftime("%d %b %Y")
+    except (ValueError, TypeError):
+        return iso_date
 
 
 # ------------------------------------------------------------------ #
@@ -103,42 +136,35 @@ def profile():
     if not session.get("user_id"):
         return redirect(url_for("login"))
 
+    uid     = session["user_id"]
+    row     = get_user_by_id(uid)
+    if row is None:
+        session.clear()
+        return redirect(url_for("login"))
+
     user = {
-        "name":         "Demo User",
-        "email":        "demo@spendly.com",
-        "member_since": "April 2026",
-        "initials":     "DU",
+        "name":         row["name"],
+        "email":        row["email"],
+        "member_since": format_member_since(row["member_since"]),
+        "initials":     initials_from_name(row["name"]),
     }
 
-    transactions = [
-        {"date": "25 Apr 2026", "description": "Dinner with friends",    "category": "Food",          "amount": 2200},
-        {"date": "20 Apr 2026", "description": "Notebook",               "category": "Other",         "amount":  800},
-        {"date": "17 Apr 2026", "description": "Groceries",              "category": "Shopping",      "amount": 6520},
-        {"date": "13 Apr 2026", "description": "Streaming subscription", "category": "Entertainment", "amount": 1875},
-        {"date": "10 Apr 2026", "description": "Pharmacy",               "category": "Health",        "amount": 3000},
-        {"date": "07 Apr 2026", "description": "Electricity bill",       "category": "Bills",         "amount": 12000},
-        {"date": "05 Apr 2026", "description": "Monthly bus pass",       "category": "Transport",     "amount": 4500},
-        {"date": "03 Apr 2026", "description": "Lunch at cafe",          "category": "Food",          "amount": 1250},
-    ]
-
-    total_spent = sum(t["amount"] for t in transactions)
+    raw_stats  = get_summary_stats(uid)
+    total_spent = raw_stats["total_spent"]
 
     stats = {
         "total_spent":       total_spent,
-        "transaction_count": len(transactions),
-        "top_category":      "Bills",
-        "avg_per_day":       round(total_spent / 30),
+        "transaction_count": raw_stats["transaction_count"],
+        "top_category":      raw_stats["top_category"],
+        "avg_per_day":       round(total_spent / 30, 2),
     }
 
-    categories = [
-        {"name": "Bills",         "amount": 12000, "pct": 37},
-        {"name": "Shopping",      "amount":  6520, "pct": 20},
-        {"name": "Transport",     "amount":  4500, "pct": 14},
-        {"name": "Food",          "amount":  3450, "pct": 11},
-        {"name": "Health",        "amount":  3000, "pct":  9},
-        {"name": "Entertainment", "amount":  1875, "pct":  6},
-        {"name": "Other",         "amount":   800, "pct":  3},
+    transactions = [
+        {**t, "date": format_display_date(t["date"])}
+        for t in get_recent_transactions(uid)
     ]
+
+    categories = get_category_breakdown(uid)
 
     return render_template(
         "profile.html",
