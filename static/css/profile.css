@@ -1,0 +1,428 @@
+/* ------------------------------------------------------------------ */
+/* Profile page — category colour tokens                               */
+/* ------------------------------------------------------------------ */
+
+:root {
+    --cat-food:               #c17f24;
+    --cat-food-bg:            #fdf3e3;
+    --cat-bills:              #8a78d4;
+    --cat-bills-bg:           #f0eeff;
+    --cat-transport:          #5089d3;
+    --cat-transport-bg:       #eaf1fb;
+    --cat-health:             #3a9d6e;
+    --cat-health-bg:          #e4f5ed;
+    --cat-shopping:           #c0392b;
+    --cat-shopping-bg:        #fdecea;
+    --cat-entertainment:      #b05e2a;
+    --cat-entertainment-bg:   #fbeee5;
+    --cat-other:              #6b6b6b;
+    --cat-other-bg:           #f3f2ef;
+}
+
+/* ------------------------------------------------------------------ */
+/* Page wrapper                                                        */
+/* ------------------------------------------------------------------ */
+
+.profile-page {
+    max-width: var(--max-width);
+    margin: 0 auto;
+    padding: 2.5rem 2rem 4rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.75rem;
+}
+
+/* ------------------------------------------------------------------ */
+/* Page header                                                         */
+/* ------------------------------------------------------------------ */
+
+.profile-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.profile-header__title {
+    font-family: var(--font-display);
+    font-size: 1.75rem;
+    color: var(--ink);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.profile-header__title svg {
+    width: 24px;
+    height: 24px;
+    color: var(--ink-muted);
+    flex-shrink: 0;
+}
+
+/* ------------------------------------------------------------------ */
+/* User info card                                                      */
+/* ------------------------------------------------------------------ */
+
+.profile-user-card {
+    background: var(--paper-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 2rem;
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
+}
+
+.user-avatar {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    background: var(--accent-light);
+    color: var(--accent);
+    font-family: var(--font-display);
+    font-size: 1.4rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    letter-spacing: 0.02em;
+}
+
+.user-meta {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+    flex: 1;
+}
+
+.user-name {
+    font-family: var(--font-display);
+    font-size: 1.3rem;
+    color: var(--ink);
+    line-height: 1.2;
+}
+
+.user-email {
+    font-size: 0.875rem;
+    color: var(--ink-muted);
+}
+
+.user-since {
+    font-size: 0.8rem;
+    color: var(--ink-faint);
+    margin-top: 0.25rem;
+}
+
+.user-badge {
+    display: inline-block;
+    background: var(--accent-light);
+    color: var(--accent);
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    padding: 0.3rem 0.8rem;
+    border-radius: 999px;
+    margin-top: 0.5rem;
+    align-self: flex-start;
+}
+
+/* ------------------------------------------------------------------ */
+/* Stats row                                                           */
+/* ------------------------------------------------------------------ */
+
+.stats-row {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1rem;
+}
+
+.stat-card {
+    background: var(--paper-card);
+    border: 1px solid var(--border-soft);
+    border-radius: var(--radius-md);
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+}
+
+.stat-card__label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--ink-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+}
+
+.stat-card__value {
+    font-family: var(--font-display);
+    font-size: 1.6rem;
+    color: var(--ink);
+    line-height: 1.1;
+    font-variant-numeric: tabular-nums;
+}
+
+.stat-card__sub {
+    font-size: 0.8rem;
+    color: var(--ink-faint);
+}
+
+/* ------------------------------------------------------------------ */
+/* Section card (shared wrapper for table + category sections)         */
+/* ------------------------------------------------------------------ */
+
+.section-card {
+    background: var(--paper-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+}
+
+.section-card__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.5rem 1.75rem;
+    border-bottom: 1px solid var(--border-soft);
+}
+
+.section-card__heading {
+    font-family: var(--font-display);
+    font-size: 1.15rem;
+    color: var(--ink);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-weight: 400;
+}
+
+.section-card__heading svg {
+    width: 18px;
+    height: 18px;
+    color: var(--ink-muted);
+    flex-shrink: 0;
+}
+
+.section-card__count {
+    background: var(--paper-warm);
+    color: var(--ink-muted);
+    font-size: 0.8rem;
+    font-weight: 500;
+    padding: 0.2rem 0.65rem;
+    border-radius: 999px;
+    border: 1px solid var(--border-soft);
+}
+
+/* ------------------------------------------------------------------ */
+/* Transaction table                                                   */
+/* ------------------------------------------------------------------ */
+
+.tx-table-wrap {
+    overflow-x: auto;
+}
+
+.tx-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9rem;
+}
+
+.tx-table thead th {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--ink-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    padding: 0.75rem 1.75rem;
+    text-align: left;
+    background: var(--paper);
+    border-bottom: 1px solid var(--border-soft);
+    white-space: nowrap;
+}
+
+.tx-table thead th:last-child {
+    text-align: right;
+}
+
+.tx-table tbody tr {
+    border-bottom: 1px solid var(--border-soft);
+    transition: background 0.15s;
+}
+
+.tx-table tbody tr:last-child {
+    border-bottom: none;
+}
+
+.tx-table tbody tr:hover {
+    background: var(--paper-warm);
+}
+
+.tx-table td {
+    padding: 1rem 1.75rem;
+    vertical-align: middle;
+}
+
+.tx-date {
+    color: var(--ink-muted);
+    font-size: 0.85rem;
+    white-space: nowrap;
+}
+
+.tx-desc {
+    color: var(--ink-soft);
+    font-weight: 500;
+}
+
+.tx-amount {
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+    font-weight: 600;
+    color: var(--ink);
+    white-space: nowrap;
+}
+
+/* ------------------------------------------------------------------ */
+/* Badge system                                                        */
+/* ------------------------------------------------------------------ */
+
+.badge {
+    display: inline-block;
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.03em;
+    padding: 0.25rem 0.65rem;
+    border-radius: 999px;
+    white-space: nowrap;
+}
+
+.badge--food          { background: var(--cat-food-bg);          color: var(--cat-food);          }
+.badge--bills         { background: var(--cat-bills-bg);         color: var(--cat-bills);         }
+.badge--transport     { background: var(--cat-transport-bg);     color: var(--cat-transport);     }
+.badge--health        { background: var(--cat-health-bg);        color: var(--cat-health);        }
+.badge--shopping      { background: var(--cat-shopping-bg);      color: var(--cat-shopping);      }
+.badge--entertainment { background: var(--cat-entertainment-bg); color: var(--cat-entertainment); }
+.badge--other         { background: var(--cat-other-bg);         color: var(--cat-other);         }
+
+/* ------------------------------------------------------------------ */
+/* Category breakdown                                                  */
+/* ------------------------------------------------------------------ */
+
+.category-list {
+    display: flex;
+    flex-direction: column;
+}
+
+.category-row {
+    display: grid;
+    grid-template-columns: 160px 1fr 120px;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.875rem 1.75rem;
+    border-bottom: 1px solid var(--border-soft);
+}
+
+.category-row:last-child {
+    border-bottom: none;
+}
+
+.category-row__label {
+    display: flex;
+    align-items: center;
+}
+
+.category-row__bar-track {
+    height: 6px;
+    background: var(--paper-warm);
+    border-radius: 999px;
+    overflow: hidden;
+}
+
+.category-row__bar {
+    height: 100%;
+    border-radius: 999px;
+    width: 0;
+    transition: width 0.6s ease;
+    background: var(--accent);
+}
+
+.category-row__bar.bar--bills         { background: var(--cat-bills);         }
+.category-row__bar.bar--shopping      { background: var(--cat-shopping);      }
+.category-row__bar.bar--transport     { background: var(--cat-transport);     }
+.category-row__bar.bar--food          { background: var(--cat-food);          }
+.category-row__bar.bar--health        { background: var(--cat-health);        }
+.category-row__bar.bar--entertainment { background: var(--cat-entertainment); }
+.category-row__bar.bar--other         { background: var(--cat-other);         }
+
+.category-row__meta {
+    text-align: right;
+    display: flex;
+    flex-direction: column;
+    gap: 0.1rem;
+}
+
+.category-row__amount {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--ink);
+    font-variant-numeric: tabular-nums;
+}
+
+.category-row__pct {
+    font-size: 0.75rem;
+    color: var(--ink-faint);
+}
+
+/* ------------------------------------------------------------------ */
+/* Responsive                                                          */
+/* ------------------------------------------------------------------ */
+
+@media (max-width: 768px) {
+    .stats-row {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .profile-user-card {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .user-badge {
+        align-self: center;
+    }
+
+    .category-row {
+        grid-template-columns: 130px 1fr 90px;
+    }
+}
+
+@media (max-width: 480px) {
+    .profile-page {
+        padding: 1.5rem 1rem 3rem;
+    }
+
+    .stats-row {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 0.75rem;
+    }
+
+    .category-row {
+        grid-template-columns: 1fr;
+        gap: 0.5rem;
+        padding: 0.875rem 1.25rem;
+    }
+
+    .category-row__meta {
+        text-align: left;
+        flex-direction: row;
+        gap: 0.5rem;
+        align-items: center;
+    }
+
+    .tx-table thead th,
+    .tx-table td {
+        padding: 0.75rem 1rem;
+    }
+}
