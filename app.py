@@ -9,10 +9,11 @@ from database.queries import (
     get_recent_transactions,
     get_summary_stats,
     get_category_breakdown,
+    insert_expense,
 )
 
 app = Flask(__name__)
-app.secret_key = "spendly-dev-secret"
+app.secret_key = os.environ.get("SECRET_KEY", "spendly-dev-secret")
 
 
 # ------------------------------------------------------------------ #
@@ -47,6 +48,9 @@ def _first_of_month_n_ago(n, from_date):
         m += 12
         y -= 1
     return date(y, m, 1)
+
+
+CATEGORIES = ["Food", "Transport", "Bills", "Health", "Entertainment", "Shopping", "Other"]
 
 
 # ------------------------------------------------------------------ #
@@ -227,9 +231,65 @@ def profile():
     )
 
 
-@app.route("/expenses/add")
+@app.route("/analytics")
+def analytics():
+    if not session.get("user_id"):
+        return redirect(url_for("login"))
+    return render_template("analytics.html")
+
+
+@app.route("/expenses/add", methods=["GET", "POST"])
 def add_expense():
-    return "Add expense — coming in Step 7"
+    if not session.get("user_id"):
+        return redirect(url_for("login"))
+
+    if request.method == "GET":
+        return render_template(
+            "add_expense.html",
+            categories=CATEGORIES,
+            today=date.today().isoformat(),
+        )
+
+    raw_amount      = request.form.get("amount", "").strip()
+    raw_category    = request.form.get("category", "").strip()
+    raw_date        = request.form.get("date", "").strip()
+    raw_description = request.form.get("description", "").strip()
+
+    def _err(msg):
+        return render_template(
+            "add_expense.html", categories=CATEGORIES, error=msg,
+            form_amount=raw_amount, form_category=raw_category,
+            form_date=raw_date, form_description=raw_description,
+        )
+
+    if not raw_amount:
+        return _err("Amount is required.")
+    try:
+        amount = float(raw_amount)
+    except ValueError:
+        return _err("Amount must be a valid number.")
+    if amount <= 0:
+        return _err("Amount must be greater than zero.")
+    if amount > 1_000_000:
+        return _err("Amount cannot exceed ₹10,00,000.")
+
+    if not raw_category:
+        return _err("Category is required.")
+    if raw_category not in CATEGORIES:
+        return _err("Invalid category selected.")
+
+    if not raw_date:
+        return _err("Date is required.")
+    try:
+        datetime.strptime(raw_date, "%Y-%m-%d")
+    except ValueError:
+        return _err("Date must be in YYYY-MM-DD format.")
+
+    description = raw_description or None
+
+    insert_expense(session["user_id"], amount, raw_category, raw_date, description)
+    flash("Expense added!")
+    return redirect(url_for("profile"))
 
 
 @app.route("/expenses/<int:id>/edit")

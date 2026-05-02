@@ -102,6 +102,7 @@ a { color: inherit; text-decoration: none; }
 
 .nav-links a { color: var(--ink-muted); transition: color 0.2s; }
 .nav-links a:hover { color: var(--ink); }
+.nav-link--active { color: var(--accent) !important; font-weight: 600; }
 
 .nav-cta {
     background: var(--ink) !important;
@@ -113,11 +114,29 @@ a { color: inherit; text-decoration: none; }
 
 .nav-cta:hover { background: var(--accent) !important; }
 
+.nav-add-btn {
+    border: 1.5px solid var(--accent) !important;
+    color: var(--accent) !important;
+    padding: 0.4rem 1rem;
+    border-radius: var(--radius-sm);
+    font-weight: 500;
+    transition: background 0.2s, color 0.2s !important;
+}
+
+.nav-add-btn:hover {
+    background: var(--accent) !important;
+    color: var(--paper) !important;
+}
+
 .nav-user {
     font-size: 0.9rem;
     font-weight: 500;
     color: var(--ink-soft);
+    cursor: pointer;
+    transition: color 0.2s;
 }
+
+.nav-user:hover { color: var(--accent); }
 
 /* ------------------------------------------------------------------ */
 /* Flash messages                                                      */
@@ -140,6 +159,12 @@ a { color: inherit; text-decoration: none; }
     padding: 0.75rem 1rem;
     font-size: 0.875rem;
     font-weight: 500;
+    opacity: 1;
+    transition: opacity 0.6s ease;
+}
+
+.flash-message--hidden {
+    opacity: 0;
 }
 
 /* ------------------------------------------------------------------ */
