@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+
+{% block title %}Analytics — Spendly{% endblock %}
+
+{% block head %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/analytics.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="analytics-page">
+    <!-- Animated background blobs -->
+    <div class="analytics-blob analytics-blob--1"></div>
+    <div class="analytics-blob analytics-blob--2"></div>
+    <div class="analytics-blob analytics-blob--3"></div>
+
+    <!-- Floating sparkles -->
+    <span class="analytics-sparkle analytics-sparkle--1" aria-hidden="true">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/></svg>
+    </span>
+    <span class="analytics-sparkle analytics-sparkle--2" aria-hidden="true">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/></svg>
+    </span>
+    <span class="analytics-sparkle analytics-sparkle--3" aria-hidden="true">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/></svg>
+    </span>
+
+    <!-- Main card -->
+    <div class="analytics-card">
+        <!-- Brand -->
+        <div class="analytics-brand">
+            <div class="analytics-brand-icon">◈</div>
+            <span class="analytics-brand-name">Spendly</span>
+        </div>
+
+        <!-- Clock icon -->
+        <div class="analytics-icon-container">
+            <div class="analytics-icon-glow"></div>
+            <div class="analytics-icon-box">
+                <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10"/>
+                    <polyline points="12 6 12 12 16 14"/>
+                </svg>
+            </div>
+        </div>
+
+        <!-- Badge -->
+        <div class="analytics-badge-wrap">
+            <span class="analytics-badge">COMING SOON</span>
+        </div>
+
+        <!-- Text content -->
+        <div class="analytics-content">
+            <h2 class="analytics-title">Advanced Analytics</h2>
+            <p class="analytics-desc">
+                We're working on powerful insights and visualizations to help you
+                understand your spending patterns better.
+            </p>
+        </div>
+
+        <!-- Animated dots -->
+        <div class="analytics-dots">
+            <span class="analytics-dot analytics-dot--1"></span>
+            <span class="analytics-dot analytics-dot--2"></span>
+            <span class="analytics-dot analytics-dot--3"></span>
+        </div>
+
+        <!-- Footer -->
+        <p class="analytics-footer-text">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="analytics-sparkle-inline"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/></svg>
+            We're crafting something special
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="analytics-sparkle-inline"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/></svg>
+        </p>
+    </div>
+</div>
+{% endblock %}
