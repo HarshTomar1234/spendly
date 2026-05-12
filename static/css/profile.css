@@ -284,6 +284,27 @@
     white-space: nowrap;
 }
 
+.tx-actions {
+    text-align: right;
+    white-space: nowrap;
+}
+
+.tx-edit-link {
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: var(--accent);
+    text-decoration: none;
+    padding: 0.2rem 0.5rem;
+    border: 1px solid var(--accent-light);
+    border-radius: var(--radius-sm);
+    transition: background 0.15s, color 0.15s;
+}
+
+.tx-edit-link:hover {
+    background: var(--accent);
+    color: var(--paper-card);
+}
+
 /* ------------------------------------------------------------------ */
 /* Badge system                                                        */
 /* ------------------------------------------------------------------ */

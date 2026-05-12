@@ -10,6 +10,8 @@ from database.queries import (
     get_summary_stats,
     get_category_breakdown,
     insert_expense,
+    get_expense_by_id,
+    update_expense,
 )
 
 app = Flask(__name__)
@@ -51,6 +53,34 @@ def _first_of_month_n_ago(n, from_date):
 
 
 CATEGORIES = ["Food", "Transport", "Bills", "Health", "Entertainment", "Shopping", "Other"]
+
+
+def _validate_expense_form(raw_amount, raw_category, raw_date, on_error):
+    """Validate shared expense form fields. Returns (amount, category, date) or on_error(msg)."""
+    if not raw_amount:
+        return on_error("Amount is required.")
+    try:
+        amount = float(raw_amount)
+    except ValueError:
+        return on_error("Amount must be a valid number.")
+    if amount <= 0:
+        return on_error("Amount must be greater than zero.")
+    if amount > 1_000_000:
+        return on_error("Amount cannot exceed ₹10,00,000.")
+
+    if not raw_category:
+        return on_error("Category is required.")
+    if raw_category not in CATEGORIES:
+        return on_error("Invalid category selected.")
+
+    if not raw_date:
+        return on_error("Date is required.")
+    try:
+        datetime.strptime(raw_date, "%Y-%m-%d")
+    except ValueError:
+        return on_error("Date must be in YYYY-MM-DD format.")
+
+    return amount, raw_category, raw_date
 
 
 # ------------------------------------------------------------------ #
@@ -262,28 +292,10 @@ def add_expense():
             form_date=raw_date, form_description=raw_description,
         )
 
-    if not raw_amount:
-        return _err("Amount is required.")
-    try:
-        amount = float(raw_amount)
-    except ValueError:
-        return _err("Amount must be a valid number.")
-    if amount <= 0:
-        return _err("Amount must be greater than zero.")
-    if amount > 1_000_000:
-        return _err("Amount cannot exceed ₹10,00,000.")
-
-    if not raw_category:
-        return _err("Category is required.")
-    if raw_category not in CATEGORIES:
-        return _err("Invalid category selected.")
-
-    if not raw_date:
-        return _err("Date is required.")
-    try:
-        datetime.strptime(raw_date, "%Y-%m-%d")
-    except ValueError:
-        return _err("Date must be in YYYY-MM-DD format.")
+    validated = _validate_expense_form(raw_amount, raw_category, raw_date, _err)
+    if not isinstance(validated, tuple):
+        return validated
+    amount, raw_category, raw_date = validated
 
     description = raw_description or None
 
@@ -292,9 +304,55 @@ def add_expense():
     return redirect(url_for("profile"))
 
 
-@app.route("/expenses/<int:id>/edit")
-def edit_expense(id):
-    return "Edit expense — coming in Step 8"
+@app.route("/expenses/<int:expense_id>/edit", methods=["GET", "POST"])
+def edit_expense(expense_id):
+    if not session.get("user_id"):
+        return redirect(url_for("login"))
+
+    expense = get_expense_by_id(expense_id, session["user_id"])
+    if expense is None:
+        abort(404)
+
+    if request.method == "GET":
+        return render_template(
+            "edit_expense.html",
+            expense=expense,
+            categories=CATEGORIES,
+            form_amount=expense["amount"],
+            form_category=expense["category"],
+            form_date=expense["date"],
+            form_description=expense["description"],
+        )
+
+    raw_amount      = request.form.get("amount", "").strip()
+    raw_category    = request.form.get("category", "").strip()
+    raw_date        = request.form.get("date", "").strip()
+    raw_description = request.form.get("description", "").strip()
+
+    def _err(msg):
+        return render_template(
+            "edit_expense.html",
+            expense=expense,
+            categories=CATEGORIES,
+            error=msg,
+            form_amount=raw_amount,
+            form_category=raw_category,
+            form_date=raw_date,
+            form_description=raw_description,
+        )
+
+    validated = _validate_expense_form(raw_amount, raw_category, raw_date, _err)
+    if not isinstance(validated, tuple):
+        return validated
+    amount, raw_category, raw_date = validated
+
+    description = raw_description or None
+
+    rows_updated = update_expense(expense_id, session["user_id"], amount, raw_category, raw_date, description)
+    if rows_updated == 0:
+        abort(404)
+    flash("Expense updated!")
+    return redirect(url_for("profile"))
 
 
 @app.route("/expenses/<int:id>/delete")

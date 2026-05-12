@@ -30,7 +30,7 @@ def get_recent_transactions(user_id, limit=10, date_from=None, date_to=None):
     date_clause, date_params = _build_date_clause(date_from, date_to)
     try:
         rows = db.execute(
-            "SELECT amount, category, date, description"
+            "SELECT id, amount, category, date, description"
             " FROM expenses"
             " WHERE user_id = ?" + date_clause +
             " ORDER BY date DESC"
@@ -39,10 +39,11 @@ def get_recent_transactions(user_id, limit=10, date_from=None, date_to=None):
         ).fetchall()
         return [
             {
-                "date": row["date"],
+                "id":          row["id"],
+                "date":        row["date"],
                 "description": row["description"] or "",
-                "category": row["category"],
-                "amount": row["amount"],
+                "category":    row["category"],
+                "amount":      row["amount"],
             }
             for row in rows
         ]
@@ -108,6 +109,41 @@ def get_category_breakdown(user_id, date_from=None, date_to=None):
     result[0]["pct"] += remainder
 
     return result
+
+
+def get_expense_by_id(expense_id, user_id):
+    db = get_db()
+    try:
+        row = db.execute(
+            "SELECT id, amount, category, date, description FROM expenses"
+            " WHERE id = ? AND user_id = ?",
+            (expense_id, user_id),
+        ).fetchone()
+        if row is None:
+            return None
+        return {
+            "id":          row["id"],
+            "amount":      row["amount"],
+            "category":    row["category"],
+            "date":        row["date"],
+            "description": row["description"] or "",
+        }
+    finally:
+        db.close()
+
+
+def update_expense(expense_id, user_id, amount, category, expense_date, description):
+    db = get_db()
+    try:
+        cur = db.execute(
+            "UPDATE expenses SET amount=?, category=?, date=?, description=?"
+            " WHERE id=? AND user_id=?",
+            (amount, category, expense_date, description, expense_id, user_id),
+        )
+        db.commit()
+        return cur.rowcount
+    finally:
+        db.close()
 
 
 def insert_expense(user_id, amount, category, expense_date, description):
