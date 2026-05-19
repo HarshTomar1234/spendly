@@ -154,6 +154,7 @@ The database is created and seeded automatically on first run. A demo account is
 | `SECRET_KEY` | `spendly-dev-secret` | Flask session signing key — set a strong random value in production |
 | `FLASK_DEBUG` | `false` | Set to `true` to enable the Flask debugger locally |
 | `PORT` | `5001` | Port the server binds to — Railway sets this automatically |
+| `DB_PATH` | `<project root>/spendly.db` | Full path to the SQLite database file — set to `/data/spendly.db` on Railway to use the persistent volume |
 
 ---
 
@@ -181,9 +182,11 @@ To deploy your own instance:
 2. Create a new project on [Railway](https://railway.com)
 3. Connect the GitHub repository as the service source
 4. Set `SECRET_KEY` to a random value (e.g. `python -c "import secrets; print(secrets.token_hex(32))"`)
-5. Railway will build and deploy automatically on every push to `main`
+5. Add a Railway Volume mounted at `/data` via the service settings
+6. Set `DB_PATH` to `/data/spendly.db` as a service variable
+7. Railway will build and deploy automatically on every push to `main`
 
-> The SQLite database is stored on the container filesystem and resets on each deploy. For persistent storage, attach a Railway Volume and update the database path in `database/db.py` to point to the mount path.
+The live deployment uses a Railway Volume mounted at `/data`. The database path is controlled by the `DB_PATH` environment variable, so the same codebase works locally (writing to the project root) and on Railway (writing to the persistent volume) without any code changes.
 
 ---
 
