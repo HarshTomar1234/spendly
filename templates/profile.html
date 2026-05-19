@@ -55,7 +55,7 @@
     <div class="stats-row">
         <div class="stat-card">
             <span class="stat-card__label">Total Spent</span>
-            <span class="stat-card__value">&#8377;{{ "{:,}".format(stats.total_spent) }}</span>
+            <span class="stat-card__value">&#8377;{{ "{:,.2f}".format(stats.total_spent) }}</span>
             <span class="stat-card__sub">{{ filter_label }}</span>
         </div>
         <div class="stat-card">
@@ -102,9 +102,14 @@
                         <td class="tx-date">{{ t.date }}</td>
                         <td class="tx-desc">{{ t.description }}</td>
                         <td><span class="badge badge--{{ slug }}">{{ t.category }}</span></td>
-                        <td class="tx-amount">&#8377;{{ "{:,}".format(t.amount) }}</td>
+                        <td class="tx-amount">&#8377;{{ "{:,.2f}".format(t.amount) }}</td>
                         <td class="tx-actions">
                             <a href="{{ url_for('edit_expense', expense_id=t.id) }}" class="tx-edit-link">Edit</a>
+                            <form method="POST" action="{{ url_for('delete_expense', expense_id=t.id) }}" style="display:inline"
+                                  onsubmit="return confirm('Delete this expense?')">
+                                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                <button type="submit" class="btn-delete">Delete</button>
+                            </form>
                         </td>
                     </tr>
                     {% endfor %}
@@ -132,7 +137,7 @@
                     <div class="category-row__bar bar--{{ slug }}" data-width="{{ c.pct }}"></div>
                 </div>
                 <div class="category-row__meta">
-                    <span class="category-row__amount">&#8377;{{ "{:,}".format(c.amount) }}</span>
+                    <span class="category-row__amount">&#8377;{{ "{:,.2f}".format(c.amount) }}</span>
                     <span class="category-row__pct">{{ c.pct }}%</span>
                 </div>
             </div>
