@@ -383,4 +383,9 @@ if __name__ == "__main__":
     with app.app_context():
         init_db()
         seed_db()
-    app.run(debug=os.environ.get("FLASK_DEBUG", "false").lower() == "true", port=5001)
+    port = int(os.environ.get("PORT", 5001))
+    app.run(
+        debug=os.environ.get("FLASK_DEBUG", "false").lower() == "true",
+        host="0.0.0.0",
+        port=port,
+    )
