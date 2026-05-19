@@ -9,3 +9,4 @@ __pycache__/
 .claude/plans/
 .claude/settings.json
 spendly copy.db
+.claude/settings.local.json
