@@ -43,7 +43,7 @@ def get_recent_transactions(user_id, limit=10, date_from=None, date_to=None):
                 "date":        row["date"],
                 "description": row["description"] or "",
                 "category":    row["category"],
-                "amount":      row["amount"],
+                "amount":      round(float(row["amount"]), 2),
             }
             for row in rows
         ]
@@ -72,7 +72,7 @@ def get_summary_stats(user_id, date_from=None, date_to=None):
             [user_id] + date_params,
         ).fetchone()
         return {
-            "total_spent":       float(row1["total_spent"]),
+            "total_spent":       round(float(row1["total_spent"]), 2),
             "transaction_count": int(row1["transaction_count"]),
             "top_category":      row2["category"] if row2 else "—",
         }
@@ -101,7 +101,7 @@ def get_category_breakdown(user_id, date_from=None, date_to=None):
     grand_total = sum(row["total"] for row in rows)
 
     result = [
-        {"name": row["category"], "amount": row["total"], "pct": round(row["total"] / grand_total * 100)}
+        {"name": row["category"], "amount": round(float(row["total"]), 2), "pct": round(row["total"] / grand_total * 100)}
         for row in rows
     ]
 
@@ -142,6 +142,18 @@ def update_expense(expense_id, user_id, amount, category, expense_date, descript
         )
         db.commit()
         return cur.rowcount
+    finally:
+        db.close()
+
+
+def remove_expense(expense_id, user_id):
+    db = get_db()
+    try:
+        db.execute(
+            "DELETE FROM expenses WHERE id = ? AND user_id = ?",
+            (expense_id, user_id),
+        )
+        db.commit()
     finally:
         db.close()
 

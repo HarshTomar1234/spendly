@@ -1,4 +1,5 @@
 import os
+import secrets
 import sqlite3
 from datetime import datetime, date
 from flask import Flask, render_template, request, redirect, url_for, flash, session, abort
@@ -12,10 +13,20 @@ from database.queries import (
     insert_expense,
     get_expense_by_id,
     update_expense,
+    remove_expense,
 )
 
 app = Flask(__name__)
 app.secret_key = os.environ.get("SECRET_KEY", "spendly-dev-secret")
+
+
+def _csrf_token():
+    if "csrf_token" not in session:
+        session["csrf_token"] = secrets.token_hex(32)
+    return session["csrf_token"]
+
+
+app.jinja_env.globals["csrf_token"] = _csrf_token
 
 
 # ------------------------------------------------------------------ #
@@ -355,9 +366,17 @@ def edit_expense(expense_id):
     return redirect(url_for("profile"))
 
 
-@app.route("/expenses/<int:id>/delete")
-def delete_expense(id):
-    return "Delete expense — coming in Step 9"
+@app.route("/expenses/<int:expense_id>/delete", methods=["POST"])
+def delete_expense(expense_id):
+    if not session.get("user_id"):
+        return redirect(url_for("login"))
+    if request.form.get("csrf_token") != session.get("csrf_token"):
+        abort(403)
+    expense = get_expense_by_id(expense_id, session["user_id"])
+    if expense is None:
+        abort(404)
+    remove_expense(expense_id, session["user_id"])
+    return redirect(url_for("profile"))
 
 
 if __name__ == "__main__":
